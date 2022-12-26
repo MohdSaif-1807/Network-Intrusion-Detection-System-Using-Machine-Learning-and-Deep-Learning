@@ -8,7 +8,7 @@ step-1: Keep the Docker Desktop and Docker Hub running parallelly on your system
 step-2: You can now check the running of the service on your browser by typing [http://localhost:3000] as per shown above.
 
 ### Method - 2 :-
-Step-1 : Fork or Clone the project using command [git clone "https://github.com/Shaik-Sohail-72/Network-Intrusion-Detection-Using-Deep-Learning.git"]   
+Step-1 : Fork or Clone the project using command [git clone "https://github.com/MohdSaif-1807/Network-Intrusion-Detection-System-Using-Machine-Learning-and-Deep-Learning"]   
 Step-2 : Create a .env file and set up the dovenv variable which is used in app.js (or) remove dotenv variables from app.js and set the links like mongoDB link etc.            
 Step-3 : Use command [npm install] to install all the packages.                                                                                                          
 Step-4 : Use command [node app.js] to run it locally.
