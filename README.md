@@ -1,6 +1,6 @@
 # Network-Intrusion-Detection-Using-Deep-Learning
 ## Objective : 
-Cyber Security: Development of Network Intrusion Detection System (NIDS),   with Machine Learning and Deep Learning, Recurrent Neural Network models, MERN web I/O System.
+Cyber Security: Development of Network Intrusion Detection System (NIDS),   with Machine Learning and Deep Learning, Recurrent Neural Network models, web I/O System.
 ## To run locally on your system:
 ### Method - 1 :-
 step-1: Keep the Docker Desktop and Docker Hub running parallelly on your system then open the command prompt or terminal and run the following command [docker run --publish 3000:3000 saif0786/nids].
