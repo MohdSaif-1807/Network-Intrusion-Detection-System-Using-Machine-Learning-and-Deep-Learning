@@ -12,6 +12,9 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import Normalizer
 import tensorflow as tf
 import pickle
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 #Uploaded_files\fs_test.csv
 path='Uploaded_files/'
 val=sys.argv[1]

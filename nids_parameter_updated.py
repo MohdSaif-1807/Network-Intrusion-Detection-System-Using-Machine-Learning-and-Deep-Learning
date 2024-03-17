@@ -12,6 +12,9 @@ import tensorflow as tf
 import pickle
 from sklearn import preprocessing
 from sklearn.preprocessing import Normalizer
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 prot_type=sys.argv[1]
 service=sys.argv[2]
 flag=sys.argv[3]

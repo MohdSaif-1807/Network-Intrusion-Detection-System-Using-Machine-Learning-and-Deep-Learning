@@ -11,6 +11,8 @@ from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
 from sklearn.preprocessing import Normalizer
 import pickle
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 data_Validate=pd.read_csv('fs_new validation project.csv')
 columns = (['protocol_type','service','flag','logged_in','count','srv_serror_rate','srv_rerror_rate','same_srv_rate','diff_srv_rate','dst_host_count','dst_host_srv_count','dst_host_same_srv_rate','dst_host_diff_srv_rate','dst_host_same_src_port_rate','dst_host_serror_rate','dst_host_rerror_rate','attack'])
 data_Validate.columns=columns
@@ -32,10 +34,26 @@ scaled_data=scaler.transform(x1)
 scaled_data=pd.DataFrame(scaled_data)
 scaled_data.columns= x1.columns
 x_validate=scaled_data
-knn_bin = pickle.load(open('knn_binary_class.sav', 'rb'))
-knn_multi = pickle.load(open('knn_multi_class.sav', 'rb'))
-randfor_bin = pickle.load(open('random_forest_binary_class.sav', 'rb'))
-randfor_multi = pickle.load(open('random_forest_multi_class.sav', 'rb'))
+
+with open('knn_binary_class.sav', 'rb') as f:
+    knn_bin = pickle.load(f)
+
+with open('knn_multi_class.sav', 'rb') as f:
+    knn_multi = pickle.load(f)
+
+
+with open('random_forest_binary_class.sav', 'rb') as f:
+    randfor_bin = pickle.load(f)
+
+
+with open('random_forest_multi_class.sav', 'rb') as f:
+    randfor_multi = pickle.load(f)
+
+
+#knn_bin = pickle.load(open('knn_binary_class.sav', 'rb'))
+# knn_multi = pickle.load(open('knn_multi_class.sav', 'rb'))
+# randfor_bin = pickle.load(open('random_forest_binary_class.sav', 'rb'))
+# randfor_multi = pickle.load(open('random_forest_multi_class.sav', 'rb'))
 cnn_bin= tf.keras.models.load_model('latest_cnn_bin.h5')
 cnn_multi= tf.keras.models.load_model('latest_cnn_multiclass.h5')
 lstm_bin= tf.keras.models.load_model('lstm_latest_bin.h5')
