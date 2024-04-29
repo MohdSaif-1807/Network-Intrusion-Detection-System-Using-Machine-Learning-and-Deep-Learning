@@ -11,6 +11,7 @@ const fs = require('fs');
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -29,6 +30,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser());
 mongoose.connect(process.env.DB_LINK, { useNewUrlParser: true }).then(() => {
   console.log("database connected Successfully!!");
 }).catch((err) => {
@@ -61,30 +63,30 @@ passport.deserializeUser(function (id, done) {
     done(err, id)
   })
 });
-passport.use(new GoogleStrategy({
-  clientID: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: process.env.CALL_BACK_URL,
-  userProfileUrl: process.env.URL
-},
-  async function (accessToken, refreshToken, profile, cb) {
-    try {
-      // Find the user
-      let user = await User.findOne({ googleId: profile.id });
+// passport.use(new GoogleStrategy({
+//   clientID: process.env.CLIENT_ID,
+//   clientSecret: process.env.CLIENT_SECRET,
+//   callbackURL: process.env.CALL_BACK_URL,
+//   userProfileUrl: process.env.URL
+// },
+//   async function (accessToken, refreshToken, profile, cb) {
+//     try {
+//       // Find the user
+//       let user = await User.findOne({ googleId: profile.id });
 
-      // If user doesn't exist, create a new one
-      if (!user) {
-        user = new User({ googleId: profile.id, username: profile.id });
-        await user.save();
-      }
+//       // If user doesn't exist, create a new one
+//       if (!user) {
+//         user = new User({ googleId: profile.id, username: profile.id });
+//         await user.save();
+//       }
 
-      // Return the user
-      return cb(null, user);
-    } catch (err) {
-      // If any error occurs, pass it to the callback
-      return cb(err);
-    }
-  }));
+//       // Return the user
+//       return cb(null, user);
+//     } catch (err) {
+//       // If any error occurs, pass it to the callback
+//       return cb(err);
+//     }
+//   }));
 
 
 submitted_csv_file = "";
@@ -406,9 +408,13 @@ app.get("/register", function (req, res) {
   res.render("register");
 });
 app.get("/submit", function (req, res) {
-  if (req.isAuthenticated()) {
+  if (req.cookies?.user) {
+    console.log(
+      "entering!!"
+    )
     res.render("submit");
   } else {
+    console.log(req.cookies);
     res.redirect("/login");
   }
 
@@ -417,6 +423,7 @@ app.get("/submit", function (req, res) {
 app.get("/logout", function (req, res, next) {
   req.logout(function (err) {
     if (err) { return next(err); }
+    res.clearCookie("user");
     res.redirect('/');
   });
   // res.redirect("/");
@@ -466,26 +473,41 @@ app.post("/register", function (req, res) {
   })
 });
 
-app.post("/login", function (req, res) {
-
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password,
-  });
-  User.findOne({ username: req.body.username, password: req.body.password }).then(() => {
-    req.login(user, function (err) {
-      if (err) {
-        console.log("error during login!!");
-        console.log(err);
-      } else {
-        // passport.authenticate("local")(req, res, function () {
-        res.redirect("/submit");
-        // });
-      }
+app.post("/login", async function (req, res) {
+  try {
+    const user = new User({
+      username: req.body.username,
+      password: req.body.password,
     });
-  })
 
+    const foundUser = await User.findOne({ username: req.body.username, password: req.body.password });
+
+    if (foundUser) {
+      console.log(foundUser);
+      res.cookie('user', foundUser.username, { maxAge: 900000, httpOnly: true });
+      res.redirect("/submit");
+    } else {
+      res.status(401).send("Invalid credentials");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Internal Server Error");
+  }
 });
+// req.login(user, function (err) {
+//   if (err) {
+//     console.log("error during login!!");
+//     console.log(err);
+//   } else {
+//     // passport.authenticate("local")(req, res, function () {
+//     console.log("error");
+//     res.redirect("/submit");
+//     // });
+//   }
+// });
+//   })
+
+// });
 
 let port = process.env.PORT;
 if (port == null || port == "") {

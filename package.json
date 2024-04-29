@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^6.2.0",
     "download": "^8.0.0",
     "ejs": "^2.6.1",
